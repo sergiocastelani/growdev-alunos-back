@@ -14,8 +14,8 @@ export function erroNaoEncontrado(res: Response, entidade: string) {
     });
 }
 
-export function erroCamposNaoInformados(res: Response) {
+export function erroCamposNaoInformados(fields: string[], res: Response) {
     return res
         .status(400)
-        .send({ ok: false, message: "Informe todos os campos obrigatórios" });
+        .send({ ok: false, message: "Informe todos os campos obrigatórios: " + fields.join(', ') });
 }

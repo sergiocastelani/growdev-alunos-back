@@ -8,7 +8,7 @@ export class LoginController {
             const { email, senha } = req.body;
 
             if (!email || !senha) {
-                return erroCamposNaoInformados(res);
+                return erroCamposNaoInformados(['email', 'senha'], res);
             }
 
             const authService = new AuthService();

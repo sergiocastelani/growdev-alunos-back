@@ -6,7 +6,7 @@ export function validaEmailSenhaMiddleware(req: Request, res: Response, next: Ne
         const { email, senha } = req.body;
 
         if (!email || !senha)
-            return erroCamposNaoInformados(res);
+            return erroCamposNaoInformados(['email', 'senha'], res);
 
         next();
     } catch (error: any) {

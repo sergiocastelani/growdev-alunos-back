@@ -12,7 +12,7 @@ export class AvaliacaoController {
             const { disciplina, nota } = req.body;
 
             if (!disciplina || !nota) {
-                return erroCamposNaoInformados(res);
+                return erroCamposNaoInformados(['disciplina', 'nota'], res);
             }
 
             const avaliacao = await avaliacaoService.criarAvaliacao(id, disciplina, nota);
@@ -47,13 +47,12 @@ export class AvaliacaoController {
     // PUT http://localhost:3335/aluno/:id/avaliacao/:idAvaliacao
     public async atualizarAvaliacao(req: Request, res: Response) {
         try {
-            const { id, idAvaliacao } = req.params;
+            const { idAvaliacao } = req.params;
             const { nota, disciplina } = req.body;
 
             if (!nota) {
-                return erroCamposNaoInformados(res);
+                return erroCamposNaoInformados(['nota'], res);
             }
-
 
             const avaliacao = await avaliacaoService.atualizarAvaliacao(idAvaliacao, nota, disciplina);
 
