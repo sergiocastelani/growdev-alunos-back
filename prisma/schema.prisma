@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TipoAluno {
+  T
+  M
+  F
+}
+
+model Aluno {
+  id String @db.Uuid @id @default(uuid())
+  nome String @db.VarChar(50)
+  email String @db.VarChar(50) @unique
+  senha String @db.VarChar(50)
+  tipo TipoAluno?
+
+  token String?
+
+  idade Int? @db.SmallInt
+  endereco Endereco?
+  avaliacoes Avaliacao[]
+  matriculas Matricula[]
+
+  dthrCriacao DateTime @default(now()) @map("dthr_criacao")
+  dthrAtualizacao DateTime @updatedAt @map("dthr_atualizacao")
+
+  @@map("aluno")
+}
+
+
+model Endereco {
+  idAluno String @db.Uuid @id @map("id_aluno")
+  rua String @db.VarChar(30)
+  cidade String @db.VarChar(30)
+  uf String @db.Char(2)
+
+  aluno Aluno @relation(fields: [idAluno], references: [id])
+
+  dthrCriacao DateTime @default(now()) @map("dthr_criacao")
+  dthrAtualizacao DateTime @updatedAt @map("dthr_atualizacao")
+
+  @@map("endereco")
+}
+
+
+model Avaliacao {
+  id String @db.Uuid @id @default(uuid())
+  disciplina String @db.VarChar(30)
+  nota Decimal @db.Decimal(3, 1)
+  idAluno String @db.Uuid @map("id_aluno")
+
+  aluno Aluno @relation(fields: [idAluno], references: [id])
+
+  dthrCriacao DateTime @default(now()) @map("dthr_criacao")
+  dthrAtualizacao DateTime @updatedAt @map("dthr_atualizacao")
+
+  @@map("avaliacao")
+}
+
+model Turma {
+  id String @db.Uuid @id @default(uuid())
+  programa String @db.VarChar(30) 
+  edicao String @db.VarChar(30)
+  maxAlunos Int? @map("max_alunos")
+
+  matriculas Matricula[]
+
+  @@map("turma")
+}
+
+
+model Matricula {
+  idAluno String @db.Uuid @map("id_aluno")
+  idTurma String @db.Uuid @map("id_turma")
+
+  dtCriacao DateTime @default(now()) @map("dt_criacao")
+
+  aluno Aluno @relation(fields: [idAluno], references: [id])
+  turma Turma @relation(fields: [idTurma], references: [id])
+
+  @@id([idAluno, idTurma])
+  @@map("matricula")
+}
