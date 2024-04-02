@@ -13,6 +13,7 @@ export class AuthService {
             select: {
                 id: true,
                 nome: true,
+                tipo: true,
             },
         });
 
@@ -38,10 +39,10 @@ export class AuthService {
         };
     }
 
-    public async validateLogin(token: string, idAluno: string): Promise<Result> {
+    public async validateLogin(token: string): Promise<Result> {
         const payload = this.validateToken(token) as PayloadToken;
 
-        if (payload === null || idAluno !== payload.id) {
+        if (payload === null) {
             return {
                 ok: false,
                 message: "Token de autenticação inválido",
@@ -53,36 +54,7 @@ export class AuthService {
             ok: true,
             message: "Validação de login feita com sucesso",
             code: 200,
-        };
-    }
-
-    public async validateLoginMaiorIdade(id: string): Promise<Result> {
-        const aluno = await repository.aluno.findUnique({
-            where: {
-                id,
-            },
-        });
-
-        if (!aluno) {
-            return {
-                ok: false,
-                message: "Aluno não encontrado",
-                code: 404,
-            };
-        }
-
-        if (!aluno.idade || aluno.idade < 18) {
-            return {
-                ok: false,
-                message: "Aluno não possui 18 anos ou mais",
-                code: 403,
-            };
-        }
-
-        return {
-            ok: true,
-            message: "Validação feita com sucesso",
-            code: 200,
+            data: payload
         };
     }
 

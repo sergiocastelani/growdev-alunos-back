@@ -1,32 +1,54 @@
 import { NextFunction, Request, Response } from "express";
+import { AuthService } from "../services/auth.service";
 
-export function verificarPermissaoAluno(req: Request, res: Response, next: NextFunction) {
-    const aluno = req.body.aluno;
+export async function verificarPermissaoDeCriacao(req: Request, res: Response, next: NextFunction) 
+{
+    const aluno = await alunoLogado(req);
 
-    if (!aluno || typeof aluno.tipo !== 'string') {
-        return res.status(403).json({ ok: false, message: 'Acesso não autorizado: informações de aluno ausentes ou inválidas' });
-    }
+    if (aluno.tipo !== 'M' && aluno.tipo !== 'T')
+        return res.status(403).json({ ok: false, message: "Apenas alunos do tipo 'M' ou 'T' podem realizar esta operação" });
 
-    if (aluno.tipo === 'F') {
-        return res.status(403).json({ ok: false, message: 'Acesso não autorizado: apenas alunos do tipo "M" ou "T" podem criar avaliações' });
-    }
-
-
-    if (aluno.tipo === 'M') {
-        const idAlunoParam = req.params.id; 
-        const idAlunoCorrente = aluno.id; 
-        if (idAlunoParam !== idAlunoCorrente) {
-            return res.status(403).json({ ok: false, message: 'Alunos do tipo "M" só podem criar avaliações para si mesmos' });
-        }
-    }
-
-    if (aluno.tipo === 'M' || aluno.tipo === 'F') {
-        const idAlunoParam = req.params.id; 
-        const idAlunoCorrente = aluno.id; 
-        if (idAlunoParam !== idAlunoCorrente) {
-            return res.status(403).json({ ok: false, message: 'Alunos do tipo "M" ou "F" só podem listar suas próprias avaliações' });
-        }
-    }
+    if (aluno.tipo === 'M' && aluno.id !== req.params.id)
+        return res.status(403).json({ ok: false, message: "Alunos tipo 'M' só podem criar avaliações para si mesmo" });
 
     next();
+}
+
+export async function verificarPermissaoDeDelecao(req: Request, res: Response, next: NextFunction) 
+{
+    const aluno = await alunoLogado(req);
+
+    if (aluno.tipo !== 'T')
+        return res.status(403).json({ ok: false, message: "Apenas alunos do tipo 'T' podem realizar esta operação" });
+
+    next();
+}
+
+export async function verificarPermissaoDeUpdate(req: Request, res: Response, next: NextFunction) 
+{
+    const aluno = await alunoLogado(req);
+
+    if (aluno.tipo !== 'T')
+        return res.status(403).json({ ok: false, message: "Apenas alunos do tipo 'T' podem realizar esta operação" });
+
+    next();
+}
+
+export async function verificarPermissaoDeListar(req: Request, res: Response, next: NextFunction) 
+{
+    const aluno = await alunoLogado(req);
+
+    if (aluno.tipo !== 'T' && aluno.id !== req.params.id)
+        return res.status(403).json({ ok: false, message: "Alunos tipo 'M' ou 'F' só podem ver suas próprias avaliações" });
+
+    next();
+}
+
+async function alunoLogado(req: Request) 
+{
+    const { authorization } = req.headers;
+    const authService = new AuthService();
+    const authResult = await authService.validateLogin(authorization ?? '');
+
+    return authResult.data;
 }

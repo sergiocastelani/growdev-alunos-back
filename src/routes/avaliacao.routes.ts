@@ -1,8 +1,7 @@
 import { Router } from "express";
 import { AvaliacaoController } from "../controllers/avaliacao.controller";
-import { validaLoginMaiorIdadeMiddleware, validaLoginMiddleware } from "../middlewares/login.middleware";
-import { verificarPermissaoAluno } from "../middlewares/avaliacao.middleware";
-import { verificarPermissaoAlunoTipoT } from "../middlewares/techHelper.middleware";
+import { validaLoginMiddleware } from "../middlewares/login.middleware";
+import { verificarPermissaoDeCriacao, verificarPermissaoDeDelecao, verificarPermissaoDeListar, verificarPermissaoDeUpdate } from "../middlewares/avaliacao.middleware";
 
 export function avaliacaoRoutes() {
     const router = Router({
@@ -13,25 +12,25 @@ export function avaliacaoRoutes() {
 
     router.post(
         "/", 
-        [validaLoginMiddleware, verificarPermissaoAluno], 
+        [validaLoginMiddleware, verificarPermissaoDeCriacao], 
         avaliacaoController.criarAvaliacao
     );
 
     router.put(
         "/:idAvaliacao", 
-        [validaLoginMiddleware, verificarPermissaoAlunoTipoT], 
+        [validaLoginMiddleware, verificarPermissaoDeUpdate], 
         avaliacaoController.atualizarAvaliacao
     );
     
     router.delete(
         "/:idAvaliacao", 
-        [validaLoginMiddleware, verificarPermissaoAlunoTipoT], 
+        [validaLoginMiddleware, verificarPermissaoDeDelecao], 
         avaliacaoController.excluirAvaliacao
     );
 
     router.get(
         "/", 
-        [validaLoginMiddleware, validaLoginMaiorIdadeMiddleware, verificarPermissaoAluno], 
+        [validaLoginMiddleware, verificarPermissaoDeListar], 
         avaliacaoController.listarAvaliacoes
     );
 

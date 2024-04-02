@@ -31,7 +31,6 @@ export class AlunoController {
         }
     }
 
-    // Obter um aluno pelo ID
     public async obterAluno(req: Request, res: Response) {
         try {
             const { id } = req.params;
@@ -58,7 +57,6 @@ export class AlunoController {
         }
     }
 
-    // Atualizar um aluno
     public async atualizarAluno(req: Request, res: Response) {
         try {
             const { id } = req.params;
@@ -86,7 +84,6 @@ export class AlunoController {
         }
     }
 
-    // Deletar um aluno
     public async deletarAluno(req: Request, res: Response) {
         try {
             const { id } = req.params;
@@ -105,7 +102,6 @@ export class AlunoController {
         }
     }
 
-    // Listar todos os alunos
     public async listarAlunos(req: Request, res: Response) {
         try {
             const alunos = await alunoService.listarAlunos();

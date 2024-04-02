@@ -5,7 +5,7 @@ import { AvaliacaoService } from "../services/avaliacao.service";
 const avaliacaoService = new AvaliacaoService();
 
 export class AvaliacaoController {
-    // POST http://localhost:3335/aluno/:id/avaliacao
+
     public async criarAvaliacao(req: Request, res: Response) {
         try {
             const { id } = req.params;
@@ -27,7 +27,6 @@ export class AvaliacaoController {
         }
     }
 
-    // GET http://localhost:3335/aluno/:id/avaliacao
     public async listarAvaliacoes(req: Request, res: Response) {
         try {
             const { id } = req.params;
@@ -44,7 +43,6 @@ export class AvaliacaoController {
         }
     }
 
-    // PUT http://localhost:3335/aluno/:id/avaliacao/:idAvaliacao
     public async atualizarAvaliacao(req: Request, res: Response) {
         try {
             const { idAvaliacao } = req.params;
@@ -66,7 +64,6 @@ export class AvaliacaoController {
         }
     }
 
-     // DELETE http://localhost:3335/aluno/:id/avaliacao/:idAvaliacao
      public async excluirAvaliacao(req: Request, res: Response) {
         try {
             const { idAvaliacao } = req.params;
